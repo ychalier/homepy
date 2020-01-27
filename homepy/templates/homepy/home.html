@@ -1,0 +1,50 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Home</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'homepy/home.css' %}" />
+</head>
+
+<body>
+    <canvas class="connecting-dots"></canvas>
+    <div class="fullheight_padding"></div>
+    <div class="wrapper">
+        <header>
+            <span></span>
+            <span>{% now "l, F jS" %} &ndash; {% now "H:i:s" %}</span>
+        </header>
+        <section>
+            {% for group in links %}
+            <div class="group">
+                {% for link in group.links %}
+                <a href="{% if link.type == 'static' %}{{link.url}}{% else %}{% url link.url %}{% endif %}">{{link.name}}</a>
+                {% endfor %}
+            </div>
+            {% if group.separator %}
+            <hr>
+            {% endif %}
+            {% endfor %}
+        </section>
+        <footer>
+            CPU {{cpu}}% \ RAM {{ram}}% \ SWAP {{swap}}% \ DISK {{disk}}% \ UPTIME {{uptime}}
+            {% if users %}
+            <br>
+            {% for user in users %}
+            {% if not forloop.first %} &mdash; {% endif %}
+             {{user.name}}@{{user.host}}
+            {% endfor %}
+            {% endif %}
+        </footer>
+    </div>
+    <div class="fullheight_padding"></div>
+    <script type="text/javascript" src="{% static 'homepy/dots.js' %}"></script>
+    <script type="text/javascript" src="{% static 'homepy/home.js' %}"></script>
+</body>
+
+</html>
