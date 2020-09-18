@@ -15,7 +15,7 @@ body {
 }
 
 .fullheight_padding {
-    height: 16px;
+    /* height: 16px; */
 }
 
 .wrapper {
@@ -31,9 +31,7 @@ a {
     color: #61BFC1;
 }
 header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    text-align: right;
 }
 
 canvas {
@@ -85,5 +83,5 @@ section {
 }
 
 footer {
-    text-align: center;
+    text-align: right;
 }

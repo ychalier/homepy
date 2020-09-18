@@ -16,8 +16,7 @@
     <div class="fullheight_padding"></div>
     <div class="wrapper">
         <header>
-            <span></span>
-            <span>{% now "l, F jS" %} &ndash; {% now "H:i:s" %}</span>
+            <p>{% now "l, F jS" %} &ndash; {% now "H:i:s" %}</p>
         </header>
         <section>
             {% for group in links %}
@@ -32,13 +31,15 @@
             {% endfor %}
         </section>
         <footer>
-            CPU {{cpu}}% \ RAM {{ram}}% \ SWAP {{swap}}% \ DISK {{disk}}% \ UPTIME {{uptime}}
-            {% if users %}
-            <br>
-            {% for user in users %}
-            {% if not forloop.first %} &mdash; {% endif %}
-             {{user.name}}@{{user.host}}
-            {% endfor %}
+            <p>UP {{uptime}}</p>
+            <p>CPU {{cpu|floatformat:0}}% / RAM {{ram|floatformat:0}}% / SWAP {{swap|floatformat:0}}% / HDD {{disk|floatformat:0}}%</p>
+            {% if False %}
+            <p>
+                {% for user in users %}
+                {% if not forloop.first %} &mdash; {% endif %}
+                {{user.name}}@{{user.host}}
+                {% endfor %}
+            </p>
             {% endif %}
         </footer>
     </div>
