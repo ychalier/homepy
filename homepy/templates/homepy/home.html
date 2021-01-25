@@ -7,45 +7,52 @@
     <title>Home</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <link href="https://fonts.googleapis.com/css?family=Fira+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'homepy/home.css' %}" />
+    <link rel="stylesheet" href="{% static 'piweb/css/master.css' %}" />
+    <style>
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+    </style>
 </head>
 
-<body>
+<body class="dark">
     <canvas class="connecting-dots"></canvas>
-    <div class="fullheight_padding"></div>
-    <div class="wrapper">
-        <header>
-            <p>{% now "l, F jS" %} &ndash; {% now "H:i:s" %}</p>
-        </header>
-        <section>
-            {% for group in links %}
-            <div class="group">
-                {% for link in group.links %}
-                <a href="{% if link.type == 'static' %}{{link.url}}{% else %}{% url link.url %}{% endif %}">{{link.name}}</a>
-                {% endfor %}
-            </div>
-            {% if group.separator %}
-            <hr>
-            {% endif %}
+    <header class="container">
+        <p class="text-right"><a href="{% url 'piweb:user' %}">@{{ request.user.username }}</a> &ndash; {% now "l, F jS" %} &ndash; {% now "H:i:s" %}</p>
+    </header>
+    <section class="container">
+        {% if links %}
+        {% for group in links %}
+        <div>
+            {% for link in group.links %}
+            <a class="link-hidden" href="{% if link.type == 'static' %}{{link.url}}{% else %}{% url link.url %}{% endif %}"><span class="chip">{{link.name}}</span></a>
             {% endfor %}
-        </section>
-        <footer>
-            <p>UP {{uptime}}</p>
-            <p>CPU {{cpu|floatformat:0}}% / RAM {{ram|floatformat:0}}% / SWAP {{swap|floatformat:0}}% / HDD {{disk|floatformat:0}}%</p>
-            {% if False %}
-            <p>
-                {% for user in users %}
-                {% if not forloop.first %} &mdash; {% endif %}
-                {{user.name}}@{{user.host}}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </footer>
-    </div>
-    <div class="fullheight_padding"></div>
+        </div>
+        {% if group.separator %}<br>{% endif %}
+        {% endfor %} 
+        {% else %}
+        <p>
+            You currently have no bookmark registered. <a href="{% url 'homepy:edit' %}">Add some over here.</a>
+        </p>
+        {% endif %}
+    </section>
+    {% if request.user.is_superuser %}
+    <footer class="container p-fixed" style="right: 0; bottom: 0;">
+        <p class="text-right">
+            <code>UP {{stats.uptime}}</code>
+            <br>
+            <code>CPU {{stats.cpu|floatformat:0}}%</code> <code>RAM {{stats.ram|floatformat:0}}%</code> <code>SWAP {{stats.swap|floatformat:0}}%</code> <code>HDD {{stats.disk|floatformat:0}}%</code>
+        </p>
+    </footer>
+    {% endif %}
     <script type="text/javascript" src="{% static 'homepy/dots.js' %}"></script>
-    <script type="text/javascript" src="{% static 'homepy/home.js' %}"></script>
 </body>
 
 </html>

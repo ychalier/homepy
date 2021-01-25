@@ -1,0 +1,132 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Edit &mid; Homepy</title>
+    <link rel="stylesheet" href="{% static 'piweb/css/master.css' %}" />
+    <script type="text/javascript" src="{% static 'piweb/js/master.js' %}"></script>
+</head>
+
+<body class="bg-dark">
+
+    <div>
+        
+        <div class="columns">
+
+        <div class="column col-3 col-xs-12"></div>
+
+        <div class="column col-6 col-xs-12">
+
+        <p class="my-2">
+            <a href="{% url 'homepy:home' %}" class="btn btn-primary">Home</a>
+            <button class="btn btn-primary" onclick="addGroup()">Add Group</button>
+            <button class="btn btn-primary" onclick="saveForm()">Save</button>
+        </p>
+
+        <div class="groups">
+        
+        {% for group in links %}
+        
+        <div class="container card my-2 p-2 group bg-secondary text-dark">
+
+        <div class="group-header">
+            <button class="btn btn-secondary" onclick="moveGroup(-1, this)">Move Up</button>
+            <button class="btn btn-secondary" onclick="moveGroup(1, this)">Move Down</button>
+            <button class="btn btn-secondary" onclick="addLink(this)">Add Link</button>
+            <button class="btn btn-secondary" onclick="deleteGroup(this)">Delete Group</button>
+        </div>
+
+        <div class="group__links">
+
+            {% for link in group.links %}
+            
+                <div class="input-group my-1 group__link">
+
+                    <input class="form-input group__link__name" type="text" name="name" placeholder="Name" value="{{ link.name }}" />
+        
+                    <input class="form-input group__link__url" type="text" name="name" placeholder="URL" value="{{ link.url }}" />
+
+                    <div class="px-2 group__link__type">
+                        <label class="form-radio form-inline">
+                            <input type="radio" value="static" name="type-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" {% if link.type == 'static' %}checked{% endif %}><i class="form-icon"></i> Static
+                        </label>
+                        <label class="form-radio form-inline">
+                            <input type="radio" value="dynamic" name="type-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" {% if link.type == 'dynamic' %}checked{% endif %}><i class="form-icon"></i> Dynamic
+                        </label>
+                    </div>
+
+                    <button onclick="deleteLink(this)" class="btn btn-clear" aria-label="Close"></button>
+                
+                </div>
+
+            {% endfor %}
+            </div>
+            <div class="form-group">
+            <label class="form-switch">
+                <input type="checkbox" class="group__separator" {% if group.separator %}checked{% endif %}>
+                <i class="form-icon"></i> Separator
+            </label>
+            </div>
+
+        </div>
+        
+        {% endfor %}
+
+        </div>
+
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="text" hidden name="json" value="" />
+        </form>
+
+        </div>
+        <div class="column col-3 col-xs-12"></div>
+        </div>
+
+
+        <template id="link_template">
+            <div class="input-group my-1 group__link">
+                <input class="form-input group__link__name" type="text" name="name" placeholder="Name" value="" />
+                <input class="form-input group__link__url" type="text" name="name" placeholder="URL" value="" />
+                <div class="form-group px-2 group__link__type">
+                    <label class="form-radio form-inline">
+                        <input type="radio" value="static" name="type" checked><i class="form-icon"></i> Static
+                    </label>
+                    <label class="form-radio form-inline">
+                        <input type="radio" value="dynamic" name="type"><i class="form-icon"></i> Dynamic
+                    </label>
+                </div>
+                <button onclick="deleteLink(this)" class="btn btn-clear" aria-label="Close"></button>
+            </div>
+        </template>
+
+        <template id="group_template">
+            <div class="container card my-2 p-2 group bg-secondary text-dark">
+                <div class="group-header">
+                    <button class="btn btn-secondary" onclick="moveGroup(-1, this)">Move Up</button>
+                    <button class="btn btn-secondary" onclick="moveGroup(1, this)">Move Down</button>
+                    <button class="btn btn-secondary" onclick="addLink(this)">Add Link</button>
+                    <button class="btn btn-secondary" onclick="deleteGroup(this)">Delete Group</button>
+                </div>
+                <div class="group__links"></div>
+                    <div class="form-group">
+                        <label class="form-switch">
+                            <input type="checkbox" class="group__separator" {% if group.separator %}checked{% endif %}>
+                            <i class="form-icon"></i> Separator
+                        </label>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <script type="text/javascript" src="{% static 'homepy/edit.js' %}"></script>
+    <script type="text/javascript">
+        bindDraggableOrdering(document.querySelector(".groups"), ".group");
+    </script>
+
+</body>
+
+</html>

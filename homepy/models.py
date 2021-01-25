@@ -1,25 +1,12 @@
 from django.db import models
+from django.conf import settings
 
 
-class SingletonModel(models.Model):
+class HomeSettings(models.Model):
 
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        self.pk = 1
-        super(SingletonModel, self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        pass
-
-    @classmethod
-    def load(cls):
-        """Return singleton and creates it if needed"""
-        obj, _ = cls.objects.get_or_create(pk=1)
-        return obj
-
-
-class HomeSettings(SingletonModel):
-
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     json = models.TextField(default="[]")
+
+    def __str__(self):
+        return "HomeSettings<%s>" % self.user
+    

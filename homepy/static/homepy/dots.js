@@ -1,3 +1,7 @@
+var dotCreationInterval = null;
+var maxNumberOfDots = 10;
+var currentAmountOfDots = 0;
+
 var canvasDots = function() {
     var canvas = document.querySelector('canvas'),
         ctx = canvas.getContext('2d'),
@@ -77,16 +81,23 @@ var canvasDots = function() {
     };
 
     function createDots() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (i = 0; i < dots.nb; i++) {
-            dots.array.push(new Dot());
-            dot = dots.array[i];
+        if (dots.array.length < dots.nb) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (i = 0; i < dots.nb; i++) {
+                dots.array.push(new Dot());
+                dot = dots.array[i];
+                dot.create();
 
-            dot.create();
+            }
+        } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (i = 0; i < dots.nb; i++) {
+                dots.array[i].create();
+            }
         }
 
-        dot.line();
-        dot.animate();
+        dots.array[1].line();
+        dots.array[1].animate();
     }
 
     window.onmousemove = function(parameter) {
@@ -97,9 +108,17 @@ var canvasDots = function() {
     mousePosition.x = window.innerWidth / 2;
     mousePosition.y = window.innerHeight / 2;
 
-    setInterval(createDots, 1000 / 30);
+    dotCreationInterval = setInterval(createDots, 1000 / 30);
 };
+
 
 window.onload = function() {
     canvasDots();
 };
+
+window.onresize = function() {
+    if (dotCreationInterval) {
+        clearInterval(dotCreationInterval);
+    }
+    canvasDots();
+}
